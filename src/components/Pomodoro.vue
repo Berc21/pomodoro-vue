@@ -30,8 +30,15 @@
 
        <p v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} </p>
 
+       <br>
+
        <p v-show="timeforLongBreak == true "> Time for long break </p>
-       <p v-show="timeforShortBreak == true"> Time for short break </p>
+
+       <p v-show="timeforShortBreak == true"> Time for short break</p>
+
+       <br>
+
+       <button v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
 
   </section>
 
@@ -51,13 +58,16 @@ export default {
       resetButton: false,
       pomodoroCompleted: 0,
       mode: "Work",
-      pomodoroTime: true
+      pomodoroTime: true,
+      alarm: new Audio('http://soundbible.com/mp3/Fire_pager-jason-1283464858.mp3'),
+      isPlaying: false,
     };
   },
   methods: {
     startTimer() {
       this.timer = setInterval(() => this.countdown(), 1000);
       this.resetButton = true;
+      this.stopAlarm();
     },
     stopTimer() {
       clearInterval(this.timer);
@@ -75,6 +85,20 @@ export default {
     paddNumber(num){
       return (num < 10 ? '0' : '') + num.toString();
     },
+    playAlarm () {
+        this.alarm.loop = true;
+        this.alarm.play();
+
+        this.isPlaying = !this.alarm.paused;
+
+    },
+    stopAlarm() {
+      if(this.alarm) {
+          this.alarm.pause();
+          this.alarm.currentTime = 0;
+            this.isPlaying = false;
+      }
+    }
   },
   computed: {
     minutes() {
@@ -106,7 +130,9 @@ export default {
   },
   watch: {
     totalTime(n) {
-      if (n <= 0) {
+      if (n == 0) {
+
+        this.playAlarm();
         this.resetTimer();
         if (this.pomodoroTime) {
           this.pomodoroCompleted++;
