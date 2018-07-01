@@ -8,7 +8,7 @@
 
   <section class="timer-container">
 
-      <main class="timer-main">
+      <main class="timer-main" :class="timerColor">
         <span class="timer-main__countdown">{{ minutes }}:{{ seconds }} </span>
         <span class="timer-main__mode">{{mode}}</span>
       </main>
@@ -26,15 +26,12 @@
             </li>
           </ul>
 
-
       </footer>
 
        <p v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} </p>
 
-       <p v-show="timeforLongBreak == true && mode == 'Work' "> Time for long break </p>
+       <p v-show="timeforLongBreak == true "> Time for long break </p>
        <p v-show="timeforShortBreak == true"> Time for short break </p>
-
-
 
   </section>
 
@@ -54,7 +51,7 @@ export default {
       resetButton: false,
       pomodoroCompleted: 0,
       mode: "Work",
-      pomodoroTime: true,
+      pomodoroTime: true
     };
   },
   methods: {
@@ -85,26 +82,34 @@ export default {
 
       return min < 10 ? "0" + min : min;
     },
+    timerColor() {
+      if (this.timeforLongBreak) {
+        return 'green'
+      }
+      if (this.timeforShortBreak) {
+        return 'orange'
+      }
+    },
     timeforLongBreak() {
       if (this.pomodoroCompleted == 0) return false;
 
-      return (this.pomodoroCompleted % 4 == 0 ? true : false) & !this.pomodoroTime;
+      return (
+        (this.pomodoroCompleted % 4 == 0 ? true : false) & !this.pomodoroTime
+      );
     },
     timeforShortBreak() {
-           return !this.timeforLongBreak && !this.pomodoroTime;
+      return !this.timeforLongBreak && !this.pomodoroTime;
     }
   },
   watch: {
     totalTime(n) {
-
       if (n <= 0) {
         this.resetTimer();
         if (this.pomodoroTime) {
-            this.pomodoroCompleted++;
+          this.pomodoroCompleted++;
         }
 
         this.pomodoroTime = !this.pomodoroTime;
-
         this.mode = "Work";
 
         if (this.timeforShortBreak) {
@@ -116,8 +121,6 @@ export default {
           this.mode = "Long Break";
           this.totalTime = this.defaultLongBreakTime;
         }
-
-
       }
     }
   }
@@ -130,6 +133,13 @@ export default {
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
+}
+
+.green {
+  background: #4caf50 !important;
+}
+.orange {
+  background: #ff5722 !important;
 }
 
 .timer-container {
