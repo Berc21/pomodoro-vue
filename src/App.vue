@@ -21,6 +21,10 @@ export default {
 <style lang="scss">
 @import "reset-css";
 
+body {
+  background: #E6ECF0;
+}
+
 button {
   border: none;
   margin: 0;

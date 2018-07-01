@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div >
 
 
   <h1 class="heading">Manage Your Time with Pomodoro App</h1>
@@ -42,6 +42,39 @@
 
   </section>
 
+
+  <section class="settings">
+
+    <h1>Settings</h1>
+
+  <div class="settings__time">
+    <label for="work"> Adjust Work Time </label>
+    <input name="work" type="text" v-model="defaultWorkMin" placeholder="minute">
+    <input name="work" type="text" v-model="defaultWorkSec"  placeholder="second">
+    <button @click="setDefaultWorkTime">Change</button>
+  </div>
+
+  <hr class="settings__hr">
+
+   <div class="settings__time">
+    <label for="short-break"> Adjust Short Break </label>
+    <input name="short-break" type="text" v-model="defaultShortBreakMin" placeholder="minute">
+    <input name="short-break" type="text" v-model="defaultShortBreakSec"  placeholder="second">
+    <button @click="setDefaultShortBreak" >Change</button>
+  </div>
+
+
+   <hr class="settings__hr">
+
+  <div class="settings__time">
+    <label for="long-break"> Adjust Long Break </label>
+    <input name="long-break" type="text" v-model="defaultLongBreakMin" placeholder="minute">
+    <input name="long-break" type="text" v-model="defaultLongBreakSec"  placeholder="second">
+    <button @click="setDefaultLongBreak">Change</button>
+  </div>
+
+  </section>
+
     </div>
 </template>
 
@@ -54,13 +87,21 @@ export default {
       defaultWorkTime: 5,
       defaultLongBreakTime: 3,
       defaultShortBreakTime: 2,
+      defaultWorkMin: null,
+      defaultWorkSec: null,
+      defaultLongBreakMin: null,
+      defaultLongBreakSec: null,
+      defaultShortBreakMin: null,
+      defaultShortBreakSec: null,
       timer: null,
       resetButton: false,
       pomodoroCompleted: 0,
       mode: "Work",
       pomodoroTime: true,
-      alarm: new Audio('http://soundbible.com/mp3/Fire_pager-jason-1283464858.mp3'),
-      isPlaying: false,
+      alarm: new Audio(
+        "http://soundbible.com/mp3/Fire_pager-jason-1283464858.mp3"
+      ),
+      isPlaying: false
     };
   },
   methods: {
@@ -82,22 +123,63 @@ export default {
     countdown() {
       this.totalTime -= 1;
     },
-    paddNumber(num){
-      return (num < 10 ? '0' : '') + num.toString();
+    paddNumber(num) {
+      return (num < 10 ? "0" : "") + num.toString();
     },
-    playAlarm () {
-        this.alarm.loop = true;
-        this.alarm.play();
+    playAlarm() {
+      this.alarm.loop = true;
+      this.alarm.play();
 
-        this.isPlaying = !this.alarm.paused;
-
+      this.isPlaying = !this.alarm.paused;
     },
     stopAlarm() {
-      if(this.alarm) {
-          this.alarm.pause();
-          this.alarm.currentTime = 0;
-            this.isPlaying = false;
+      if (this.alarm) {
+        this.alarm.pause();
+        this.alarm.currentTime = 0;
+        this.isPlaying = false;
       }
+    },
+    setDefaultWorkTime() {
+      let min = Number(this.defaultWorkMin);
+      let sec = Number(this.defaultWorkSec);
+
+      if (!(Number.isInteger(min) && Number.isInteger(sec))) {
+        this.defaultWorkMin = null;
+        this.defaultWorkSec = null;
+        return;
+      }
+
+      this.defaultWorkTime = min * 60 + sec;
+
+      this.totalTime = min * 60 + sec;
+
+      this.pomodoroTime = true;
+      this.mode = "Work";
+      this.stopAlarm();
+    },
+    setDefaultLongBreak() {
+      let min = Number(this.defaultLongBreakMin);
+      let sec = Number(this.defaultLongBreakSec);
+
+      if (!(Number.isInteger(min) && Number.isInteger(sec))) {
+        this.defaultLongBreakMin = null;
+        this.defaultLongBreakSec = null;
+        return;
+      }
+
+      this.defaultLongBreakTime = min * 60 + sec;
+    },
+    setDefaultShortBreak() {
+      let min = Number(this.defaultShortBreakMin);
+      let sec = Number(this.defaultShortBreakSec);
+
+      if (!(Number.isInteger(min) && Number.isInteger(sec))) {
+        this.defaultShortBreakMin = null;
+        this.defaultShortBreakSec = null;
+        return;
+      }
+
+      this.defaultShortBreakTime = min * 60 + sec;
     }
   },
   computed: {
@@ -111,10 +193,10 @@ export default {
     },
     timerColor() {
       if (this.timeforLongBreak) {
-        return 'green'
+        return "green";
       }
       if (this.timeforShortBreak) {
-        return 'orange'
+        return "orange";
       }
     },
     timeforLongBreak() {
@@ -131,7 +213,6 @@ export default {
   watch: {
     totalTime(n) {
       if (n == 0) {
-
         this.playAlarm();
         this.resetTimer();
         if (this.pomodoroTime) {
@@ -177,6 +258,8 @@ export default {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
+  background: #fff;
+  border-radius: 3px;
 }
 
 // Main
@@ -202,7 +285,7 @@ export default {
     border: 1px solid #dce4e7;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
@@ -241,6 +324,35 @@ export default {
 .timer-menu {
   display: flex;
   justify-content: space-between;
+}
+
+.settings {
+  width: 500px;
+  margin: 40px auto;
+  h1 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  &__time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    input {
+      max-width: 50px;
+      height: 30px;
+      border-radius: 5px;
+      text-align: center;
+      border: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+  }
+
+  &__hr {
+    border-color: #272e38;
+  }
 }
 </style>
 
