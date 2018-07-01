@@ -78,7 +78,7 @@ export default {
       return Math.floor(this.totalTime / 60);
     },
     seconds() {
-      let min = this.totalTime - this.minutes * 60;
+      let min = this.totalTime % 60;
 
       return min < 10 ? "0" + min : min;
     },
