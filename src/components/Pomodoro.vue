@@ -285,12 +285,13 @@ export default {
     border: 1px solid #dce4e7;
     border-radius: 50%;
     transform: translate(-50%, -50%);
+  }
+  &::before {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  &:hover::before,
-  &:hover::after {
+  &:hover::before {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
 

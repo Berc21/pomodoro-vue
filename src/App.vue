@@ -20,10 +20,13 @@ export default {
 
 <style lang="scss">
 @import "reset-css";
+@import "https://fonts.googleapis.com/css?family=Ubuntu";
+
 
 body {
   background: #E6ECF0;
   color: #262C36;
+  font-family: 'Ubuntu', sans-serif;
 }
 
 button {
