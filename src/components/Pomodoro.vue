@@ -67,20 +67,23 @@ export default {
       clearInterval(this.timer);
       this.resetButton = false;
       this.timer = null;
-      this.totalTime = 5;
+      this.totalTime = this.defaultWorkTime;
     },
     countdown() {
       this.totalTime -= 1;
-    }
+    },
+    paddNumber(num){
+      return (num < 10 ? '0' : '') + num.toString();
+    },
   },
   computed: {
     minutes() {
-      return Math.floor(this.totalTime / 60);
+      let min = Math.floor(this.totalTime / 60);
+      return this.paddNumber(min);
     },
     seconds() {
-      let min = this.totalTime % 60;
-
-      return min < 10 ? "0" + min : min;
+      let sec = this.totalTime % 60;
+      return this.paddNumber(sec);
     },
     timerColor() {
       if (this.timeforLongBreak) {
