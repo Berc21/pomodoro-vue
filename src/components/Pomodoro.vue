@@ -285,7 +285,7 @@ export default {
     border: 1px solid #dce4e7;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
@@ -328,7 +328,11 @@ export default {
 
 .settings {
   width: 500px;
+  background: #fff;
+  padding: 30px;
   margin: 40px auto;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 3px;
   h1 {
     font-size: 32px;
     text-align: center;

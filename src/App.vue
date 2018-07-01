@@ -23,6 +23,7 @@ export default {
 
 body {
   background: #E6ECF0;
+  color: #262C36;
 }
 
 button {
@@ -53,6 +54,8 @@ button {
   margin: 100px auto;
   width: 960px;
 }
+
+
 </style>
 
 
