@@ -131,7 +131,7 @@ export default {
       this.totalTime -= 1;
     },
     paddNumber(num) {
-      return (num < 10 ? "0" : "") + num.toString();
+      return (num < 10 && num.match(/^[0][a-zA-Z]{13}/) ? "0" : "") + num.toString();
     },
     playAlarm() {
       this.alarm.loop = true;
@@ -175,7 +175,7 @@ export default {
       this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Long break time is " +  this.vWorkMin + ":" + this.vWorkSec,
+        text: "Long break time is " +  this.paddNumber(this.vWorkMin) + ":" + this.paddNumber(this.vWorkSec),
         type: "success"
       });
 
@@ -203,7 +203,7 @@ export default {
       this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Long break time is " +  this.vLongBreakMin + ":" + this.vLongBreakSec,
+        text: "Long break time is " +  this.paddNumber(this.vLongBreakMin) + ":" + this.paddNumber(this.vLongBreakSec),
         type: "success"
       });
 
@@ -231,7 +231,7 @@ export default {
         this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Short break time is " +  this.vShortBreakMin + ":" + this.vShortBreakSec,
+        text: "Short break time is " +  this.paddNumber(this.vShortBreakMin) + ":" +this.paddNumber(this.vShortBreakSec),
         type: "success"
       });
 
