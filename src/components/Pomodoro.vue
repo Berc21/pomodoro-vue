@@ -44,7 +44,7 @@
     <h1>Settings</h1>
 
   <div class="timer-settings__time">
-    <label for="work">Work Time </label>
+    <label for="work">Work Time <hr ><span style="text-align:center;display: inherit;margin-top: 5px;">{{calculateWorkTime}} </span></label>
     <input name="work" type="text" v-model="vWorkMin" placeholder="minute">
     <input name="work" type="text" v-model="vWorkSec"  placeholder="second">
     <button @click="setDefaultWorkTime">Change</button>
@@ -68,6 +68,8 @@
     <input name="long-break" type="text" v-model="vLongBreakSec"  placeholder="second">
     <button @click="setDefaultLongBreak">Change</button>
   </div>
+
+    <hr class="timer-settings__hr">
 
    <div class="timer-settings__time">
     <label for="long-break-lap">Long Break Lap </label>
@@ -269,6 +271,13 @@ export default {
       if (this.timeforShortBreak) {
         return "orange";
       }
+    },
+    calculateWorkTime() {
+        let sec = this.defaultWorkTime % 60;
+
+        let min = Math.floor(this.totalTime / 60);
+
+        return `${this.paddNumber(min)}:${this.paddNumber(sec)} `
     },
     timeforLongBreak() {
       if (this.pomodoroCompleted == 0) return false;
