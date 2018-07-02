@@ -31,8 +31,7 @@
       <footer class="timer-footer">
 
        <p class="timer-footer__item" v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} Pomodoro </p>
-       <p class="timer-footer__item" v-show="timeforLongBreak == true "> Time for a long break </p>
-       <p class="timer-footer__item" v-show="timeforShortBreak == true"> Time for a short break</p>
+
        <button class="timer-footer__item" v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
 
       </footer>
@@ -45,7 +44,7 @@
     <h1>Settings</h1>
 
   <div class="timer-settings__time">
-    <label for="work"> Adjust Work Time </label>
+    <label for="work">Work Time </label>
     <input name="work" type="text" v-model="defaultWorkMin" placeholder="minute">
     <input name="work" type="text" v-model="defaultWorkSec"  placeholder="second">
     <button @click="setDefaultWorkTime">Change</button>
@@ -54,7 +53,7 @@
   <hr class="timer-settings__hr">
 
    <div class="timer-settings__time">
-    <label for="short-break"> Adjust Short Break </label>
+    <label for="short-break">Short Break </label>
     <input name="short-break" type="text" v-model="defaultShortBreakMin" placeholder="minute">
     <input name="short-break" type="text" v-model="defaultShortBreakSec"  placeholder="second">
     <button @click="setDefaultShortBreak" >Change</button>
@@ -64,7 +63,7 @@
    <hr class="timer-settings__hr">
 
   <div class="timer-settings__time">
-    <label for="long-break"> Adjust Long Break </label>
+    <label for="long-break">Long Break </label>
     <input name="long-break" type="text" v-model="defaultLongBreakMin" placeholder="minute">
     <input name="long-break" type="text" v-model="defaultLongBreakSec"  placeholder="second">
     <button @click="setDefaultLongBreak">Change</button>
@@ -136,13 +135,24 @@ export default {
         this.isPlaying = false;
       }
     },
+    settingsValidation() {
+      this.$notify({
+        group: "settings",
+        title: "Invalid input",
+        text: "Please write only number!",
+        type: "error"
+      });
+    },
     setDefaultWorkTime() {
+      if (!(this.defaultWorkMin && this.defaultWorkMin)) return;
+
       let min = Number(this.defaultWorkMin);
       let sec = Number(this.defaultWorkSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
         this.defaultWorkMin = null;
         this.defaultWorkSec = null;
+        this.settingsValidation();
         return;
       }
 
@@ -150,29 +160,33 @@ export default {
 
       this.totalTime = min * 60 + sec;
 
-      this.pomodoroTime = true;
-      this.mode = "Work";
       this.stopAlarm();
     },
     setDefaultLongBreak() {
+      if (!(this.defaultLongBreakMin && this.defaultLongBreakSec)) return;
+
       let min = Number(this.defaultLongBreakMin);
       let sec = Number(this.defaultLongBreakSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
         this.defaultLongBreakMin = null;
         this.defaultLongBreakSec = null;
+        this.settingsValidation();
         return;
       }
 
       this.defaultLongBreakTime = min * 60 + sec;
     },
     setDefaultShortBreak() {
+      if (!(this.defaultShortBreakMin && this.defaultShortBreakSec)) return;
+
       let min = Number(this.defaultShortBreakMin);
       let sec = Number(this.defaultShortBreakSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
         this.defaultShortBreakMin = null;
         this.defaultShortBreakSec = null;
+        this.settingsValidation();
         return;
       }
 
@@ -222,11 +236,33 @@ export default {
         if (this.timeforShortBreak) {
           this.mode = "Short Break";
           this.totalTime = this.defaultShortBreakTime;
+
+          this.$notify({
+            group: "pomodoro",
+            title: "Time for a short break!",
+            text: "You're working hard, have a rest!",
+            type: "warn"
+          });
         }
 
         if (this.timeforLongBreak) {
           this.mode = "Long Break";
           this.totalTime = this.defaultLongBreakTime;
+
+          this.$notify({
+            group: "pomodoro",
+            title: "Time for a long break!",
+            text: "You're working hard, have a rest!",
+            type: "success"
+          });
+        }
+
+        if (this.mode == "Work") {
+          this.$notify({
+            group: "pomodoro",
+            title: "Work Time",
+            text: "Start getting things done!"
+          });
         }
       }
     }
@@ -324,11 +360,10 @@ export default {
   justify-content: space-between;
 }
 
-
 .timer-footer {
-   margin-top: 20px;
-   display: flex;
-   justify-content: space-around;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
 }
 
 .timer-settings {
@@ -346,9 +381,12 @@ export default {
 
   &__time {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     margin: 20px 0;
+    label {
+      flex-basis: 100px;
+    }
     input {
       max-width: 50px;
       height: 30px;

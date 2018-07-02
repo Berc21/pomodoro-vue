@@ -4,6 +4,10 @@
           <pomodoro/>
     </main>
 
+    <notifications group="pomodoro"  position="top center" />
+
+    <notifications group="settings"  position="top center" />
+
   </div>
 </template>
 
@@ -56,6 +60,38 @@ button {
 .container {
   margin: 100px auto;
   width: 960px;
+}
+
+/** Notification Style */
+
+.vue-notification {
+  padding: 10px;
+  margin: 0 5px 5px;
+
+  font-size: 20px;
+
+  color: #33B5E5;
+  background: white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border: none;
+
+  &.warn {
+     color: #FF8800;
+     background: white;
+     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  &.error {
+    color: #FF3547;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  &.success {
+    color: #00C851;
+    background: white;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
 }
 
 
