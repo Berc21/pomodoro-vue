@@ -53,7 +53,7 @@
   <hr class="timer-settings__hr">
 
    <div class="timer-settings__time">
-    <label for="short-break">Short Break </label>
+    <label for="short-break">Short Break <hr ><span style="text-align:center;display: inherit;margin-top: 5px;">{{calculateShortBreakTime}} </span></label>
     <input name="short-break" type="text" v-model="vShortBreakMin" placeholder="minute">
     <input name="short-break" type="text" v-model="vShortBreakSec"  placeholder="second">
     <button @click="setDefaultShortBreak" >Change</button>
@@ -71,8 +71,9 @@
 
     <hr class="timer-settings__hr">
 
+
    <div class="timer-settings__time">
-    <label for="long-break-lap">Long Break Lap </label>
+    <label for="long-break-lap">Long Break Lap  <hr ><span style="text-align:center;display: inherit;margin-top: 5px;">{{whenLongBreak}} </span>  </label>
     <input name="long-break-lap" type="text" v-model="vwhenLongBreak" placeholder="lap">
     <button @click="setWhenLongBreak">Change</button>
   </div>
@@ -279,6 +280,13 @@ export default {
 
         return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
+    calculateShortBreakTime() {
+        let sec = this.defaultShortBreakTime % 60;
+
+        let min = Math.floor(this.defaultShortBreakTime / 60);
+
+        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
+    },
     calculateLongBreakTime() {
         let sec = this.defaultLongBreakTime % 60;
 
@@ -286,6 +294,7 @@ export default {
 
         return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
+
     timeforLongBreak() {
       if (this.pomodoroCompleted == 0) return false;
 
