@@ -30,7 +30,7 @@
 
       <footer class="timer-footer">
 
-       <p class="timer-footer__item" v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} Pomodoro </p>
+       <p class="timer-footer__item timer-footer__item--bigger" v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} pomodoro so far </p>
 
        <button class="timer-footer__item" v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
 
@@ -45,8 +45,8 @@
 
   <div class="timer-settings__time">
     <label for="work">Work Time </label>
-    <input name="work" type="text" v-model="defaultWorkMin" placeholder="minute">
-    <input name="work" type="text" v-model="defaultWorkSec"  placeholder="second">
+    <input name="work" type="text" v-model="vWorkMin" placeholder="minute">
+    <input name="work" type="text" v-model="vWorkSec"  placeholder="second">
     <button @click="setDefaultWorkTime">Change</button>
   </div>
 
@@ -54,8 +54,8 @@
 
    <div class="timer-settings__time">
     <label for="short-break">Short Break </label>
-    <input name="short-break" type="text" v-model="defaultShortBreakMin" placeholder="minute">
-    <input name="short-break" type="text" v-model="defaultShortBreakSec"  placeholder="second">
+    <input name="short-break" type="text" v-model="vShortBreakMin" placeholder="minute">
+    <input name="short-break" type="text" v-model="vShortBreakSec"  placeholder="second">
     <button @click="setDefaultShortBreak" >Change</button>
   </div>
 
@@ -64,9 +64,15 @@
 
   <div class="timer-settings__time">
     <label for="long-break">Long Break </label>
-    <input name="long-break" type="text" v-model="defaultLongBreakMin" placeholder="minute">
-    <input name="long-break" type="text" v-model="defaultLongBreakSec"  placeholder="second">
+    <input name="long-break" type="text" v-model="vLongBreakMin" placeholder="minute">
+    <input name="long-break" type="text" v-model="vLongBreakSec"  placeholder="second">
     <button @click="setDefaultLongBreak">Change</button>
+  </div>
+
+   <div class="timer-settings__time">
+    <label for="long-break-lap">Long Break Lap </label>
+    <input name="long-break-lap" type="text" v-model="vwhenLongBreak" placeholder="lap">
+    <button @click="setWhenLongBreak">Change</button>
   </div>
 
   </section>
@@ -83,12 +89,14 @@ export default {
       defaultWorkTime: 5,
       defaultLongBreakTime: 3,
       defaultShortBreakTime: 2,
-      defaultWorkMin: null,
-      defaultWorkSec: null,
-      defaultLongBreakMin: null,
-      defaultLongBreakSec: null,
-      defaultShortBreakMin: null,
-      defaultShortBreakSec: null,
+      whenLongBreak: 4,
+      vwhenLongBreak: null,
+      vWorkMin: null,
+      vWorkSec: null,
+      vLongBreakMin: null,
+      vLongBreakSec: null,
+      vShortBreakMin: null,
+      vShortBreakSec: null,
       timer: null,
       resetButton: false,
       pomodoroCompleted: 0,
@@ -144,53 +152,105 @@ export default {
       });
     },
     setDefaultWorkTime() {
-      if (!(this.defaultWorkMin && this.defaultWorkMin)) return;
+      if ((this.vWorkMin == 0 && this.vWorkSec == 0)) return;
+      if (!(this.vWorkMin && this.vWorkSec)) return;
 
-      let min = Number(this.defaultWorkMin);
-      let sec = Number(this.defaultWorkSec);
+      let min = Number(this.vWorkMin);
+      let sec = Number(this.vWorkSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
-        this.defaultWorkMin = null;
-        this.defaultWorkSec = null;
+        this.vWorkMin = null;
+        this.vWorkSec = null;
         this.settingsValidation();
         return;
       }
 
-      this.defaultWorkTime = min * 60 + sec;
+      this.defaultWorkTime = (min * 60 ) + sec;
 
-      this.totalTime = min * 60 + sec;
+      this.totalTime = (min * 60 )+ sec;
 
-      this.stopAlarm();
+      this.$notify({
+        group: "settings",
+        title: "Success!",
+        text: "Long break time is " +  this.vWorkMin + ":" + this.vWorkSec,
+        type: "success"
+      });
+
+      this.vWorkMin = null;
+      this.vWorkSec = null;
+
+
     },
     setDefaultLongBreak() {
-      if (!(this.defaultLongBreakMin && this.defaultLongBreakSec)) return;
+      if ((this.vLongBreakMin == 0 && this.vLongBreakMin == 0)) return;
+      if (!(this.vLongBreakMin && this.vLongBreakMin)) return;
 
-      let min = Number(this.defaultLongBreakMin);
-      let sec = Number(this.defaultLongBreakSec);
+      let min = Number(this.vLongBreakMin);
+      let sec = Number(this.vLongBreakSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
-        this.defaultLongBreakMin = null;
-        this.defaultLongBreakSec = null;
+        this.vLongBreakMin = null;
+        this.vLongBreakSec = null;
         this.settingsValidation();
         return;
       }
 
-      this.defaultLongBreakTime = min * 60 + sec;
+      this.defaultLongBreakTime = (min * 60 ) + sec;
+
+      this.$notify({
+        group: "settings",
+        title: "Success!",
+        text: "Long break time is " +  this.vLongBreakMin + ":" + this.vLongBreakSec,
+        type: "success"
+      });
+
+      this.vLongBreakMin = null;
+      this.vLongBreakSec = null;
+
+
     },
     setDefaultShortBreak() {
-      if (!(this.defaultShortBreakMin && this.defaultShortBreakSec)) return;
+      if ((this.vShortBreakMin == 0 && this.vShortBreakSec == 0)) return;
+      if (!(this.vShortBreakMin && this.vShortBreakSec)) return;
 
-      let min = Number(this.defaultShortBreakMin);
-      let sec = Number(this.defaultShortBreakSec);
+      let min = Number(this.vShortBreakMin);
+      let sec = Number(this.vShortBreakSec);
 
       if (!(Number.isInteger(min) && Number.isInteger(sec))) {
-        this.defaultShortBreakMin = null;
-        this.defaultShortBreakSec = null;
+        this.vShortBreakMin = null;
+        this.vShortBreakSec = null;
         this.settingsValidation();
         return;
       }
 
-      this.defaultShortBreakTime = min * 60 + sec;
+      this.defaultShortBreakTime = (min * 60 )+ sec;
+
+        this.$notify({
+        group: "settings",
+        title: "Success!",
+        text: "Short break time is " +  this.vShortBreakMin + ":" + this.vShortBreakSec,
+        type: "success"
+      });
+
+      this.vShortBreakMin = null;
+      this.vShortBreakSec = null;
+
+    },
+    setWhenLongBreak() {
+       if (this.vwhenLongBreak == 0) return;
+       if (!this.vwhenLongBreak) return;
+
+       this.whenLongBreak = this.vwhenLongBreak;
+
+       this.vwhenLongBreak = null;
+
+        this.$notify({
+        group: "settings",
+        title: "Success!",
+        text: "Long break lap is " +  this.whenLongBreak ,
+        type: "success"
+      });
+
     }
   },
   computed: {
@@ -214,7 +274,7 @@ export default {
       if (this.pomodoroCompleted == 0) return false;
 
       return (
-        (this.pomodoroCompleted % 4 == 0 ? true : false) & !this.pomodoroTime
+        (this.pomodoroCompleted % this.whenLongBreak == 0 ? true : false) & !this.pomodoroTime
       );
     },
     timeforShortBreak() {
@@ -364,6 +424,9 @@ export default {
   margin-top: 20px;
   display: flex;
   justify-content: space-around;
+  &__item {
+    text-align: center;
+  }
 }
 
 .timer-settings {
@@ -381,12 +444,10 @@ export default {
 
   &__time {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     margin: 20px 0;
-    label {
-      flex-basis: 100px;
-    }
+
     input {
       max-width: 50px;
       height: 30px;

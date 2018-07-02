@@ -6,7 +6,7 @@
 
     <notifications group="pomodoro"  position="top center" />
 
-    <notifications group="settings"  position="top center" />
+    <notifications group="settings"  position="bottom center" />
 
   </div>
 </template>
