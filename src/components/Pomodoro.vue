@@ -13,7 +13,7 @@
         <span class="timer-main__mode">{{mode}}</span>
       </main>
 
-      <footer class="timer-footer">
+      <section class="timer-controls">
           <ul class="timer-menu">
             <li class="timer-menu__item">
                  <button v-show="!timer" @click="startTimer" >
@@ -26,37 +26,34 @@
             </li>
           </ul>
 
+      </section>
+
+      <footer class="timer-footer">
+
+       <p class="timer-footer__item" v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} Pomodoro </p>
+       <p class="timer-footer__item" v-show="timeforLongBreak == true "> Time for a long break </p>
+       <p class="timer-footer__item" v-show="timeforShortBreak == true"> Time for a short break</p>
+       <button class="timer-footer__item" v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
+
       </footer>
-
-       <p v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} </p>
-
-       <br>
-
-       <p v-show="timeforLongBreak == true "> Time for long break </p>
-
-       <p v-show="timeforShortBreak == true"> Time for short break</p>
-
-       <br>
-
-       <button v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
 
   </section>
 
 
-  <section class="settings">
+  <section class="timer-settings">
 
     <h1>Settings</h1>
 
-  <div class="settings__time">
+  <div class="timer-settings__time">
     <label for="work"> Adjust Work Time </label>
     <input name="work" type="text" v-model="defaultWorkMin" placeholder="minute">
     <input name="work" type="text" v-model="defaultWorkSec"  placeholder="second">
     <button @click="setDefaultWorkTime">Change</button>
   </div>
 
-  <hr class="settings__hr">
+  <hr class="timer-settings__hr">
 
-   <div class="settings__time">
+   <div class="timer-settings__time">
     <label for="short-break"> Adjust Short Break </label>
     <input name="short-break" type="text" v-model="defaultShortBreakMin" placeholder="minute">
     <input name="short-break" type="text" v-model="defaultShortBreakSec"  placeholder="second">
@@ -64,9 +61,9 @@
   </div>
 
 
-   <hr class="settings__hr">
+   <hr class="timer-settings__hr">
 
-  <div class="settings__time">
+  <div class="timer-settings__time">
     <label for="long-break"> Adjust Long Break </label>
     <input name="long-break" type="text" v-model="defaultLongBreakMin" placeholder="minute">
     <input name="long-break" type="text" v-model="defaultLongBreakSec"  placeholder="second">
@@ -317,7 +314,7 @@ export default {
   }
 }
 
-.timer-footer {
+.timer-controls {
   width: 50%;
   margin: 50px auto 0 auto;
 }
@@ -327,7 +324,14 @@ export default {
   justify-content: space-between;
 }
 
-.settings {
+
+.timer-footer {
+   margin-top: 20px;
+   display: flex;
+   justify-content: space-around;
+}
+
+.timer-settings {
   width: 500px;
   background: #fff;
   padding: 30px;
