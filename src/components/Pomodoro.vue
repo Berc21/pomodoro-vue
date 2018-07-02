@@ -63,7 +63,7 @@
    <hr class="timer-settings__hr">
 
   <div class="timer-settings__time">
-    <label for="long-break">Long Break </label>
+    <label for="long-break">Long Break  <hr ><span style="text-align:center;display: inherit;margin-top: 5px;">{{calculateLongBreakTime}} </span> </label>
     <input name="long-break" type="text" v-model="vLongBreakMin" placeholder="minute">
     <input name="long-break" type="text" v-model="vLongBreakSec"  placeholder="second">
     <button @click="setDefaultLongBreak">Change</button>
@@ -277,7 +277,14 @@ export default {
 
         let min = Math.floor(this.totalTime / 60);
 
-        return `${this.paddNumber(min)}:${this.paddNumber(sec)} `
+        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
+    },
+    calculateLongBreakTime() {
+        let sec = this.defaultLongBreakTime % 60;
+
+        let min = Math.floor(this.defaultLongBreakTime / 60);
+
+        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
     timeforLongBreak() {
       if (this.pomodoroCompleted == 0) return false;
