@@ -3,7 +3,7 @@
   <div >
 
 
-  <h1 class="heading">Manage Your Time with Pomodoro App</h1>
+  <h1 class="heading">Manage your time wisely</h1>
 
 
   <section class="timer-container">
@@ -30,12 +30,21 @@
 
       <footer class="timer-footer">
 
-       <p class="timer-footer__item timer-footer__item--bigger" v-show="pomodoroCompleted > 0"> You completed {{pomodoroCompleted}} pomodoro so far </p>
+
 
        <button class="timer-footer__item" v-show="isPlaying" @click="stopAlarm">Stop Alarm</button>
 
       </footer>
 
+  </section>
+
+
+  <section class="timer-stats">
+      <h1 class="timer-stats__heading">Stats</h1>
+
+      <p class="timer-stats__pomodoro" > <strong> Completed Work:</strong> {{pomodoroCompleted}}</p>
+       <p class="timer-stats__pomodoro" > <strong> Taken Short Break:</strong> {{shortBreakCompleted}} </p>
+        <p class="timer-stats__pomodoro" > <strong> Taken Long Break:</strong> {{longBreakCompleted}} </p>
   </section>
 
 
@@ -71,7 +80,6 @@
 
     <hr class="timer-settings__hr">
 
-
    <div class="timer-settings__time">
     <label for="long-break-lap">Long Break Lap  <hr ><span style="text-align:center;display: inherit;margin-top: 5px;">{{whenLongBreak}} </span>  </label>
     <input name="long-break-lap" type="text" v-model="vwhenLongBreak" placeholder="lap">
@@ -103,8 +111,11 @@ export default {
       timer: null,
       resetButton: false,
       pomodoroCompleted: 0,
+      longBreakCompleted: 0,
+      shortBreakCompleted: 0,
       mode: "Work",
       pomodoroTime: true,
+      lastTwoMode: [],
       alarm: new Audio(
         "http://soundbible.com/mp3/Fire_pager-jason-1283464858.mp3"
       ),
@@ -131,7 +142,10 @@ export default {
       this.totalTime -= 1;
     },
     paddNumber(num) {
-      return (num < 10 && num.match(/^[0][a-zA-Z]{13}/) ? "0" : "") + num.toString();
+      num = String(num);
+      return (
+        (num < 10 && num.match(/^[0][a-zA-Z]{13}/) ? "0" : "") + num.toString()
+      );
     },
     playAlarm() {
       this.alarm.loop = true;
@@ -155,7 +169,7 @@ export default {
       });
     },
     setDefaultWorkTime() {
-      if ((this.vWorkMin == 0 && this.vWorkSec == 0)) return;
+      if (this.vWorkMin == 0 && this.vWorkSec == 0) return;
       if (!(this.vWorkMin && this.vWorkSec)) return;
 
       let min = Number(this.vWorkMin);
@@ -168,24 +182,26 @@ export default {
         return;
       }
 
-      this.defaultWorkTime = (min * 60 ) + sec;
+      this.defaultWorkTime = min * 60 + sec;
 
-      this.totalTime = (min * 60 )+ sec;
+      this.totalTime = min * 60 + sec;
 
       this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Long break time is " +  this.paddNumber(this.vWorkMin) + ":" + this.paddNumber(this.vWorkSec),
+        text:
+          "Long break time is " +
+          this.paddNumber(this.vWorkMin) +
+          ":" +
+          this.paddNumber(this.vWorkSec),
         type: "success"
       });
 
       this.vWorkMin = null;
       this.vWorkSec = null;
-
-
     },
     setDefaultLongBreak() {
-      if ((this.vLongBreakMin == 0 && this.vLongBreakMin == 0)) return;
+      if (this.vLongBreakMin == 0 && this.vLongBreakMin == 0) return;
       if (!(this.vLongBreakMin && this.vLongBreakMin)) return;
 
       let min = Number(this.vLongBreakMin);
@@ -198,22 +214,24 @@ export default {
         return;
       }
 
-      this.defaultLongBreakTime = (min * 60 ) + sec;
+      this.defaultLongBreakTime = min * 60 + sec;
 
       this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Long break time is " +  this.paddNumber(this.vLongBreakMin) + ":" + this.paddNumber(this.vLongBreakSec),
+        text:
+          "Long break time is " +
+          this.paddNumber(this.vLongBreakMin) +
+          ":" +
+          this.paddNumber(this.vLongBreakSec),
         type: "success"
       });
 
       this.vLongBreakMin = null;
       this.vLongBreakSec = null;
-
-
     },
     setDefaultShortBreak() {
-      if ((this.vShortBreakMin == 0 && this.vShortBreakSec == 0)) return;
+      if (this.vShortBreakMin == 0 && this.vShortBreakSec == 0) return;
       if (!(this.vShortBreakMin && this.vShortBreakSec)) return;
 
       let min = Number(this.vShortBreakMin);
@@ -226,34 +244,36 @@ export default {
         return;
       }
 
-      this.defaultShortBreakTime = (min * 60 )+ sec;
+      this.defaultShortBreakTime = min * 60 + sec;
 
-        this.$notify({
+      this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Short break time is " +  this.paddNumber(this.vShortBreakMin) + ":" +this.paddNumber(this.vShortBreakSec),
+        text:
+          "Short break time is " +
+          this.paddNumber(this.vShortBreakMin) +
+          ":" +
+          this.paddNumber(this.vShortBreakSec),
         type: "success"
       });
 
       this.vShortBreakMin = null;
       this.vShortBreakSec = null;
-
     },
     setWhenLongBreak() {
-       if (this.vwhenLongBreak == 0) return;
-       if (!this.vwhenLongBreak) return;
+      if (this.vwhenLongBreak == 0) return;
+      if (!this.vwhenLongBreak) return;
 
-       this.whenLongBreak = this.vwhenLongBreak;
+      this.whenLongBreak = this.vwhenLongBreak;
 
-       this.vwhenLongBreak = null;
+      this.vwhenLongBreak = null;
 
-        this.$notify({
+      this.$notify({
         group: "settings",
         title: "Success!",
-        text: "Long break lap is " +  this.whenLongBreak ,
+        text: "Long break lap is " + this.whenLongBreak,
         type: "success"
       });
-
     }
   },
   computed: {
@@ -274,36 +294,45 @@ export default {
       }
     },
     calculateWorkTime() {
-        let sec = this.defaultWorkTime % 60;
+      let sec = this.defaultWorkTime % 60;
 
-        let min = Math.floor(this.totalTime / 60);
+      let min = Math.floor(this.totalTime / 60);
 
-        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
+      return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
     calculateShortBreakTime() {
-        let sec = this.defaultShortBreakTime % 60;
+      let sec = this.defaultShortBreakTime % 60;
 
-        let min = Math.floor(this.defaultShortBreakTime / 60);
+      let min = Math.floor(this.defaultShortBreakTime / 60);
 
-        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
+      return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
     calculateLongBreakTime() {
-        let sec = this.defaultLongBreakTime % 60;
+      let sec = this.defaultLongBreakTime % 60;
 
-        let min = Math.floor(this.defaultLongBreakTime / 60);
+      let min = Math.floor(this.defaultLongBreakTime / 60);
 
-        return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
+      return `${this.paddNumber(min)}:${this.paddNumber(sec)}`;
     },
-
     timeforLongBreak() {
       if (this.pomodoroCompleted == 0) return false;
 
       return (
-        (this.pomodoroCompleted % this.whenLongBreak == 0 ? true : false) & !this.pomodoroTime
+        (this.pomodoroCompleted % this.whenLongBreak == 0 ? true : false) &
+        !this.pomodoroTime
       );
     },
     timeforShortBreak() {
       return !this.timeforLongBreak && !this.pomodoroTime;
+    },
+    keepModeHistory() {
+      this.lastTwoMode.push(this.mode);
+
+      if (this.lastTwoMode.length > 2) {
+        this.lastTwoMode.splice(0, 1);
+      }
+
+      return this.lastTwoMode;
     }
   },
   watch: {
@@ -348,6 +377,15 @@ export default {
             title: "Work Time",
             text: "Start getting things done!"
           });
+        }
+
+        switch (this.keepModeHistory[0]) {
+          case "Long Break":
+            this.longBreakCompleted++;
+            break;
+          case "Short Break":
+            this.shortBreakCompleted++;
+            break;
         }
       }
     }
@@ -454,8 +492,27 @@ export default {
   }
 }
 
+.timer-stats {
+  background: #fff;
+  max-width: 500px;
+  width: 100%;
+  padding: 30px;
+  margin: 40px auto;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 3px;
+  &__heading {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  &__pomodoro {
+    margin-bottom: 10px;
+  }
+}
+
 .timer-settings {
-  width: 500px;
+  max-width: 500px;
+  width: 100%;
   background: #fff;
   padding: 30px;
   margin: 40px auto;

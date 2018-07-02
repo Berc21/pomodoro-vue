@@ -33,6 +33,7 @@ body {
   font-family: 'Ubuntu', sans-serif;
 }
 
+strong { font-weight: bold; }
 button {
   border: none;
   margin: 0;
